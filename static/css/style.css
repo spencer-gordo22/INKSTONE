@@ -1,0 +1,301 @@
+/* AI help: Claude Code wrote the styling around my .cell and color rules (2026-11-09) */
+/* AI help: Claude Code restyled the board: big guess cell, smaller clue cells, clue labels, flip animation (2026-11-09) */
+/* AI help: Claude created this skeleton file (imports only, no logic) (2026-11-01) */
+/* AI help: Claude Code styled the feedback form and its Feedback label (2026-11-09) */
+/* AI help: Claude Code replaced the bottom guess bar styles with an input that fills the guess cell (2026-11-09) */
+
+/* ---------- Page ---------- */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #000;
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue",
+                 "Segoe UI", "Microsoft YaHei", Roboto, sans-serif;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------- Title + rules ---------- */
+
+header {
+    width: 100%;
+    padding: 16px 16px 8px;
+    text-align: center;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    border-bottom: 1px solid #3a3a3c;
+}
+
+.rules {
+    max-width: 360px;
+    margin: 8px 16px 16px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #8e8e93;
+}
+
+/* ---------- Grid ---------- */
+/* Row width: guess cell 3 + 60 + 9 = 72px, four clue cells 4 x (3 + 48 + 3) = 216px, total 288px (fits 320px) */
+
+.row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Guess cell: bigger square, extra gap after it so it reads "character + its clues" */
+.row .cell:first-child {
+    width: 60px;
+    height: 60px;
+    font-size: 32px;
+    margin-right: 9px;
+}
+
+/* Clue cells: structure, part 1, part 2, strokes */
+.row .cell:not(:first-child) {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+}
+
+/* ---------- Clue column labels ---------- */
+
+.clue_labels {
+    display: flex;
+    width: 288px;
+    padding-left: 72px; /* skip over the guess cell column */
+    margin-bottom: 2px;
+}
+
+.clue_labels span {
+    width: 54px; /* same as one clue cell incl. its margins */
+    text-align: center;
+    white-space: nowrap;
+    font-size: 10px;
+    color: #8e8e93;
+}
+
+/* ---------- Flip animation when a cell gets a color ---------- */
+/* Two animations: "flip" turns the cell, "flip_color" hides the new color
+   until the cell is edge-on halfway through (150ms), so it flips into its color. */
+
+.row .cell.green,
+.row .cell.yellow,
+.row .cell.grey {
+    animation:
+        flip 300ms ease-in-out backwards,
+        flip_color 150ms step-end backwards;
+}
+
+.row .cell:nth-child(2) { animation-delay: 0ms; }
+.row .cell:nth-child(3) { animation-delay: 150ms; }
+.row .cell:nth-child(4) { animation-delay: 300ms; }
+.row .cell:nth-child(5) { animation-delay: 450ms; }
+
+@keyframes flip {
+    0%   { transform: rotateX(0deg); }
+    50%  { transform: rotateX(90deg); }
+    100% { transform: rotateX(0deg); }
+}
+
+@keyframes flip_color {
+    from { background-color: transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .row .cell.green,
+    .row .cell.yellow,
+    .row .cell.grey {
+        animation: none;
+    }
+}
+
+/* ---------- Message ---------- */
+
+#message {
+    min-height: 28px;
+    max-width: 360px;
+    margin: 12px 16px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+/* ---------- Answer card ---------- */
+
+#answer_card {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100% - 32px);
+    max-width: 340px;
+    padding: 24px;
+    text-align: center;
+    font-size: 18px;
+    line-height: 1.5;
+    background-color: #121213;
+    border: 1px solid #3a3a3c;
+    border-radius: 12px;
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.6), 0 12px 40px rgba(0, 0, 0, 0.8);
+    z-index: 10;
+    animation: pop 200ms ease-out;
+}
+
+/* Setting display/position above must not override the hidden attribute */
+#answer_card[hidden] {
+    display: none;
+}
+
+@keyframes pop {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #answer_card {
+        animation: none;
+    }
+}
+
+/* ---------- Guess input (lives inside the current row's guess cell) ---------- */
+
+.row .cell:has(#guess_input) {
+    border-color: #8e8e93;
+}
+
+#guess_input {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    font-size: 32px; /* 16px or more stops iOS from zooming on focus */
+    font-weight: bold;
+    font-family: inherit;
+    text-align: center;
+    color: #fff;
+    caret-color: #fff;
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+.type_hint {
+    margin: 10px 16px 0;
+    font-size: 12px;
+    color: #8e8e93;
+    text-align: center;
+}
+
+/* ---------- Feedback form ---------- */
+
+#feedback_form {
+    margin-top: auto; /* keeps it at the bottom of the page */
+    width: 100%;
+    max-width: 420px;
+    padding: 4px 16px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.feedback_title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8e8e93;
+}
+
+.feedback_row {
+    display: flex;
+    gap: 8px;
+}
+
+#feedback_text {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 12px;
+    font-size: 16px;
+    font-family: inherit;
+    color: #fff;
+    background-color: #121213;
+    border: 1px solid #3a3a3c;
+    border-radius: 8px;
+    outline: none;
+    resize: none;
+}
+
+#feedback_text:focus {
+    border-color: #8e8e93;
+}
+
+#feedback_form button {
+    align-self: stretch;
+    padding: 0 18px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: inherit;
+    color: #fff;
+    background-color: transparent;
+    border: 1px solid #3a3a3c;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#feedback_form button:hover {
+    border-color: #8e8e93;
+}
+
+/* ---------- My own code: .cell and color rules (written by me) ---------- */
+
+.cell {
+    width: 52px;
+    height: 52px;
+    display: inline-flex;
+    font-size: 24px;
+    align-items: center;
+    border: 2px solid #3a3a3c;
+    margin: 3px;
+    color: white;
+    justify-content: center;
+    font-weight: bold;
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.green {
+    background-color: #538d4e
+}
+
+.grey {
+    background-color: #3a3a3c;
+}
+
+.yellow {
+    background-color: #b59f3b;
+}

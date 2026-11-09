@@ -1,0 +1,29 @@
+<!-- AI help: Claude created this skeleton file (imports only, no logic) (2026-11-01) -->
+<!-- AI help: Claude Code added the "rules" class to the rules paragraph for styling (2026-11-09) -->
+{% extends "layout.html" %}
+
+{% block main %}
+<header>INKSTONE</header>
+<p class="rules">Please make use of the drawing chinese keyboard that will allow you to guess words based off their radicals.</p>
+
+{% for i in range (6) %}
+<div class="row">
+    <span class="cell">{% if i == 0 %}<input id="guess_input" aria-label="Type your guess, then press Enter" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="go" autofocus>{% endif %}</span>
+    <span class="cell"></span>
+    <span class="cell"></span>
+    <span class="cell"></span>
+    <span class="cell"></span>
+</div>
+{% endfor %}
+
+<p class="type_hint">Type your character in the box, then press Enter</p>
+<div id="message"></div>
+<div id="answer_card" hidden></div>
+<form id="feedback_form">
+    <label for="feedback_text" class="feedback_title">Feedback</label>
+    <div class="feedback_row">
+        <textarea id="feedback_text" rows="2" placeholder="Tell me what you think..."></textarea>
+        <button type="submit">Send</button>
+    </div>
+</form>
+{% endblock %}

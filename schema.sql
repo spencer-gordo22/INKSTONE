@@ -1,0 +1,5 @@
+CREATE TABLE feedback (
+    id INTEGER PRIMARY KEY,
+    message TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);

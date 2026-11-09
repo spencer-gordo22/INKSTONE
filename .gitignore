@@ -1,0 +1,9 @@
+# AI help: Claude updated this .gitignore for deployment (2026-11-09)
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.bak
+.DS_Store
+data/raw/
+inkstone.db
