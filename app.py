@@ -4,6 +4,8 @@ from flask import Flask, jsonify, redirect, render_template, request, send_from_
 from werkzeug.security import check_password_hash, generate_password_hash
 from cs50 import SQL
 from game import compare, load_characters, todays_answer, get_tone, stroke_display
+from datetime import date, datetime
+from zoneinfo import ZoneInfo
 
 # AI help: Claude made the DB path absolute (based on this file's folder) so the app runs from any working directory (2026-11-09)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -18,12 +20,22 @@ all_chars = load_characters()
 
 @app.route('/', methods = ['POST', 'GET'])
 def homepage():
-    session["visits"] = 0
     return render_template("index.html")
 
 @app.route('/guess', methods=['GET', 'POST'])
 def guess():
     if request.method == 'POST':
+        now = datetime.now(ZoneInfo("America/New_York"))
+        today = now.date()
+        today = today.isoformat()
+        if session.get("date", None) != today:
+            session["date"] = today
+            session["visits"] = 0
+            session["finished"] = False
+        if session.get("finished", False):
+            return jsonify ({
+                "message": "Thanks For playing, Please come back tommorow!"
+            })
         answer = todays_answer()
         guess1 = request.get_json()
         word = guess1["guess"]
@@ -42,11 +54,11 @@ def guess():
             tone = get_tone(answer_row["pinyin"])
             if word == answer:
                 message = "Congrats you won!"
-                session["visits"] = 0
+                session["finished"] = True
                 game_over = True
             elif guess_count == 6:
                 message = f"You lost. The answer was: {answer}"
-                session["visits"] = 0
+                session["finished"] = True
                 game_over = True
             if not game_over:
                 if guess_count == 4:
