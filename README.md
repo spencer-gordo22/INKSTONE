@@ -1,5 +1,7 @@
 # Inkstone
 
+https://github.com/user-attachments/assets/04730a77-f56b-426e-bf53-f4cb105e5598
+
 #### Video Demo: https://www.youtube.com/watch?v=APJPQNP7bms
 
 #### Description:
