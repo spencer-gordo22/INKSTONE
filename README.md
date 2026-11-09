@@ -1,5 +1,7 @@
 # Inkstone
 
+https://github.com/user-attachments/assets/04730a77-f56b-426e-bf53-f4cb105e5598
+
 #### Video Demo: https://www.youtube.com/watch?v=APJPQNP7bms
 
 #### Description:
@@ -54,7 +56,6 @@ Open the local address printed in the terminal (usually `http://127.0.0.1:5000`)
 - `static/icons/.gitkeep` — Keeps the otherwise empty icons directory in the project.
 - `data/LICENSE` — A copy of the GNU LGPL v3, which covers `data/starter.csv`.
 - `.gitignore` — Excludes the virtual environment, Python cache files, raw source data, local backup files, and the local `inkstone.db` database.
-- `CLAUDE.md` — Project notes and development constraints.
 
 ## Data sources
 
