@@ -78,4 +78,35 @@ feedback_form.addEventListener("submit", async (event) => {
     else {
         message_box.textContent = reply.message;
     }
+
 });
+
+// ... all your existing code ...
+
+feedback_form.addEventListener("submit", async (event) => {
+    // ... existing feedback code ...
+});
+
+// new function goes here (or anywhere outside other functions)
+function redraw_history(history) {
+    if (!history || history.length === 0) return;
+
+    for (let i = 0; i < history.length && i < rows.length; i++) {
+        const data = history[i];
+        const cells = rows[i].querySelectorAll(".cell");
+
+        cells[0].textContent = data.guess;
+        cells[1].textContent = data.same_structure ? "✅" : "❌";
+        cells[2].textContent = data.parts[0];
+        cells[2].classList.add(data.colors[0]);
+        cells[3].textContent = data.parts[1];
+        cells[3].classList.add(data.colors[1]);
+        cells[4].textContent = data.stroke_count + data.stroke_hint;
+    }
+
+    row = history.length;
+    if (row < rows.length) {
+        rows[row].querySelector(".cell").appendChild(input);
+        input.focus();
+    }
+}

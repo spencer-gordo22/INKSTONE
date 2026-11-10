@@ -36,6 +36,8 @@ def guess():
             return jsonify ({
                 "message": "Thanks For playing, Please come back tommorow!"
             })
+        if "history" not in session:
+            session["history"] = []
         answer = todays_answer()
         guess1 = request.get_json()
         word = guess1["guess"]
@@ -67,6 +69,15 @@ def guess():
                     hint = f"Pinyin starts with: {first_char}"
             if game_over:
                 answer_info = answer_row
+            session["history"].append ({
+                "guess": word,
+                "same_structure": results[1],
+                "parts": [guess_row["radical_1"], guess_row["radical_2"]],
+                "colors": results[0],
+                "stroke_count": guess_row["strokes"],
+                "stroke_hint": stroke_difference,
+            })
+            session.modified = True
             return jsonify({
                 "hint": hint,
                 "message": message,
@@ -78,6 +89,7 @@ def guess():
                 "parts": [guess_row["radical_1"], guess_row["radical_2"]],
                 "stroke_count": guess_row["strokes"],
                 "answer_info": answer_info,
+                "session_history": session["history"],
             })
         else:
             return jsonify ({

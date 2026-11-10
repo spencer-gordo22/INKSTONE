@@ -4,7 +4,15 @@
 
 {% block main %}
 <header>INKSTONE</header>
-<p class="rules">Please make use of the drawing chinese keyboard that will allow you to guess words based off their radicals.</p>
+<p class="rules">Welcome! if on mobile, feel free to use the drawing keyboard to guess.</p>
+
+<div class="clue_labels">
+    <span class="cell">Structure Check</span>
+    <span class="cell">First Radical</span>
+    <span class="cell">Second Radical</span>
+    <span class="cell">Strokes</span>
+</div>
+
 
 {% for i in range (6) %}
 <div class="row">
