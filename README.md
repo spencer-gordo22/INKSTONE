@@ -16,16 +16,21 @@ Zimo requires Python 3.9 or newer, Flask, and the CS50 Python library. Open a te
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
-sqlite3 zimo.db < schema.sql
 ```
 
-The first command creates the virtual environment. If `.venv` already exists, you can skip that command. The last command creates the `zimo.db` feedback database from `schema.sql`; you only need to run it once. Start the Flask development server from the same project directory with:
+The first command creates the virtual environment. If `.venv` already exists, you can skip that command. When the app starts, it creates the `zimo.db` feedback database from `schema.sql` if the database does not exist. Start the Flask development server from the same project directory with:
 
 ```bash
 python -m flask --app app run
 ```
 
-Open the local address printed in the terminal (usually `http://127.0.0.1:5000`) in your browser. To stop the server, press Control-C in the terminal. Guesses come from `data/starter.csv`, and the daily answer is selected from `data/answers.json`. Submitted feedback is saved in `zimo.db`, the database created from `schema.sql` during setup.
+Open the local address printed in the terminal (usually `http://127.0.0.1:5000`) in your browser. To stop the server, press Control-C in the terminal. Guesses come from `data/starter.csv`, and the daily answer is selected from `data/answers.json`. Submitted feedback is saved in `zimo.db`, which is initialized from `schema.sql` at startup.
+
+## Stats and deployment
+
+Streak and game totals are stored in your browser’s `localStorage`, not in the server database. They are separate for each browser and will reset if you clear that browser’s site data. The daily streak date follows the game’s New York time zone. To check streak progression, finish a win, then use your browser’s developer tools to edit the `zimo_stats` entry in Local Storage: set `lastPlayed` to yesterday’s New York date and `currentStreak` to `1`, then reload the finished game. The streak should become `2`; another reload on the same date should not count the game twice. Restore or clear the test stats afterwards.
+
+For deployment, the `Procfile` starts the Flask app with Gunicorn. Install the packages in `requirements.txt` before launching it.
 
 ## Design choices
 
@@ -46,7 +51,8 @@ Open the local address printed in the terminal (usually `http://127.0.0.1:5000`)
 - `data/answers.json` — The 95 selected characters from which the game chooses its daily answer.
 - `schema.sql` — SQL definition for creating the feedback table in a new database.
 - `zimo.db` — SQLite database that stores submitted feedback. It is created from `schema.sql` during setup and is not checked into the repository.
-- `requirements.txt` — Python dependencies: `cs50` and `Flask`.
+- `requirements.txt` — Python dependencies: `cs50`, `Flask`, and `gunicorn` for deployment.
+- `Procfile` — Tells the hosting platform to run `gunicorn app:app`.
 - `templates/layout.html` — Shared HTML page shell, stylesheet, manifest, and JavaScript includes.
 - `templates/index.html` — Game board with the guess input in the first cell, feedback form, and answer display elements.
 - `templates/homepage.html` — An unused empty template placeholder; the current game page is `index.html`.

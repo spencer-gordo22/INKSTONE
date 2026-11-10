@@ -122,28 +122,22 @@ function redraw_history(history, finished = false) {
 
 // Restore the board from the session when the player reloads the page.
 redraw_history(initial_state.history, initial_state.finished);
-if (initial_state.finished) {
-    input.remove();
-    const won = initial_state.message && initial_state.message.toLowerCase().includes("congrats");
-    handleGameEnd(won);
-    message_box.textContent = initial_state.message;
-    if (initial_state.answer_info) {
-        document.querySelector("#answer_hanzi").textContent = initial_state.answer_info.character;
-        document.querySelector("#answer_pinyin").textContent = initial_state.answer_info.pinyin;
-        document.querySelector("#answer_english").textContent = initial_state.answer_info.definition;
-        share.hidden = false
-    }
-}
 
-share.addEventListener("click", () => {
-    let results = ""
+share.addEventListener("click", async () => {
+    const symbols = { green: "🟩", yellow: "🟨", grey: "⬛" };
+    const results = [`Zimo ${row}/6`];
     for (let i = 0; i < row; i++) {
         const cells = rows[i].querySelectorAll(".cell");
-        const color1 = cells[2].classList.contains("green") ? "🟩" : "🟨";
-        const color2 = cells[3].classList.contains("green") ? "🟩" : "🟨";
-        results += color1 + color2 + "\n";
+        const color1 = ["green", "yellow", "grey"].find(color => cells[2].classList.contains(color));
+        const color2 = ["green", "yellow", "grey"].find(color => cells[3].classList.contains(color));
+        results.push((symbols[color1] || "⬛") + (symbols[color2] || "⬛"));
     }
-    navigator.clipboard.writeText(results);
+    try {
+        await navigator.clipboard.writeText(results.join("\n"));
+        message_box.textContent = "Results copied!";
+    } catch {
+        message_box.textContent = "Could not copy results on this browser.";
+    }
 });
 
 // --- Streak + Stats (localStorage) ---
@@ -166,8 +160,8 @@ function saveStats(stats) {
 
 function updateStats(won) {
   const stats = loadStats();
-  const today = new Date().toISOString().slice(0, 10);
-  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  const today = gameDate();
+  const yesterday = shiftGameDate(today, -1);
 
   // Only count once per day
   if (stats.lastPlayed === today) return stats;
@@ -195,10 +189,40 @@ function showStats(stats) {
   document.querySelector("#played").textContent = stats.gamesPlayed;
   document.querySelector("#wins").textContent = stats.gamesWon;
   document.querySelector("#stats").hidden = false;
+  document.querySelector("#next_game_note").hidden = false;
+}
+
+function gameDate(date = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).formatToParts(date);
+  const values = Object.fromEntries(parts.map(part => [part.type, part.value]));
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
+function shiftGameDate(dateString, days) {
+  const [year, month, day] = dateString.split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1, day + days)).toISOString().slice(0, 10);
 }
 
 // Call this when the game ends
 function handleGameEnd(won) {
   const stats = updateStats(won);
   showStats(stats);
+}
+
+if (initial_state.finished) {
+    input.remove();
+    const won = initial_state.message && initial_state.message.toLowerCase().includes("congrats");
+    handleGameEnd(won);
+    message_box.textContent = initial_state.message;
+    if (initial_state.answer_info) {
+        document.querySelector("#answer_hanzi").textContent = initial_state.answer_info.character;
+        document.querySelector("#answer_pinyin").textContent = initial_state.answer_info.pinyin;
+        document.querySelector("#answer_english").textContent = initial_state.answer_info.definition;
+        share.hidden = false;
+    }
 }

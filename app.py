@@ -1,5 +1,6 @@
 # AI help: Claude created this skeleton file (imports only, no logic) (2026-11-01)
 import os
+import sqlite3
 from flask import Flask, jsonify, redirect, render_template, request, send_from_directory, session
 from werkzeug.security import check_password_hash, generate_password_hash
 from cs50 import SQL
@@ -9,7 +10,17 @@ from zoneinfo import ZoneInfo
 
 # AI help: Claude made the DB path absolute (based on this file's folder) so the app runs from any working directory (2026-11-09)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-db = SQL("sqlite:///" + os.path.join(BASE_DIR, "zimo.db"))
+DB_PATH = os.path.join(BASE_DIR, "zimo.db")
+
+
+def initialize_database(database_path=DB_PATH):
+    with sqlite3.connect(database_path) as connection:
+        with open(os.path.join(BASE_DIR, "schema.sql"), encoding="utf-8") as schema_file:
+            connection.executescript(schema_file.read())
+
+
+initialize_database()
+db = SQL("sqlite:///" + DB_PATH)
 
 
 app = Flask(__name__)
@@ -46,7 +57,7 @@ def guess():
         reset_daily_session()
         if session.get("finished", False):
             return jsonify ({
-                "message": "Thanks For playing, Please come back tommorow!"
+                "message": "Thanks for playing! Please come back tomorrow."
             })
         if "history" not in session:
             session["history"] = []
@@ -67,13 +78,12 @@ def guess():
             first_char = answer_row["pinyin"][0]
             tone = get_tone(answer_row["pinyin"])
             if word == answer:
-                message = "Congrats you won! Thank you for playing, please come back tommorow."
+                message = "Congrats, you won!"
                 session["finished"] = True
                 game_over = True
             elif guess_count == 6:
                 message = f"You lost. The answer was: {answer}"
                 session["finished"] = True
-                message = "Thank you for playing, please come back tommorow."
                 game_over = True
             if not game_over:
                 if guess_count == 4:
