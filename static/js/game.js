@@ -6,6 +6,7 @@ const answer_card = document.querySelector("#answer_card")
 const feedback_form = document.querySelector("#feedback_form")
 const feedback_text = document.querySelector("#feedback_text")
 const initial_state = JSON.parse(document.querySelector("#initial_game_state").textContent)
+const share = document.querySelector("#share_results")
 
 let row = 0;
 
@@ -64,6 +65,7 @@ async function submit_guess() {
         document.querySelector("#answer_hanzi").textContent = data.answer_info.character;
         document.querySelector("#answer_pinyin").textContent = data.answer_info.pinyin;
         document.querySelector("#answer_english").textContent = data.answer_info.definition;
+        share.hidden = false
         message_box.textContent = data.message;
         answer_card.hidden = false;
         return;
@@ -122,8 +124,20 @@ if (initial_state.finished) {
     input.remove();
     message_box.textContent = initial_state.message;
     if (initial_state.answer_info) {
-       document.querySelector("#answer_hanzi").textContent = initial_state.answer_info.character;
+        document.querySelector("#answer_hanzi").textContent = initial_state.answer_info.character;
         document.querySelector("#answer_pinyin").textContent = initial_state.answer_info.pinyin;
         document.querySelector("#answer_english").textContent = initial_state.answer_info.definition;
+        share.hidden = false
     }
 }
+
+share.addEventListener("click", () => {
+    let results = ""
+    for (let i = 0; i < row; i++) {
+        const cells = rows[i].querySelectorAll(".cell");
+        const color1 = cells[2].classList.contains("green") ? "🟩" : "🟨";
+        const color2 = cells[3].classList.contains("green") ? "🟩" : "🟨";
+        results += color1 + color2 + "\n";
+    }
+    navigator.clipboard.writeText(results);
+});
