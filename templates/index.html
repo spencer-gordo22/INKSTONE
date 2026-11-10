@@ -26,7 +26,6 @@
 
 <p class="type_hint">Type your character in the box, then press Enter</p>
 <div id="message"></div>
-<div id="answer_card" hidden></div>
 <form id="feedback_form">
     <label for="feedback_text" class="feedback_title">Feedback</label>
     <div class="feedback_row">
@@ -34,6 +33,11 @@
         <button type="submit">Send</button>
     </div>
 </form>
+<div id="answer_card" hidden>
+  <div id="answer_hanzi"></div>
+  <div id="answer_pinyin"></div>
+  <div id="answer_english"></div>
+</div>
 <script id="initial_game_state" type="application/json">{{ {
     "history": session_history,
     "finished": game_finished,

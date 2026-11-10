@@ -19,6 +19,7 @@ input.addEventListener("keydown", (event) => {
 async function submit_guess() {
     const guess = input.value.trim();
     if (guess === "") {
+        rows[row].classList.add("shake");
         return;
     }
 
@@ -32,7 +33,10 @@ async function submit_guess() {
 
     if (!data.colors) {
         message_box.textContent = data.message;
-        return;
+        rows[row].classList.add("shake");
+        setTimeout(() => {
+            rows[row].classList.remove("shake");
+        }, 400);
     }
 
     const current_row = rows[row]
@@ -54,6 +58,7 @@ async function submit_guess() {
     if (data.game_over || row >= rows.length) {
         input.remove();
         answer_card.textContent = `${data.answer_info.character} ${data.answer_info.pinyin} ${data.answer_info.defintion}`;
+        message_box.textContent = data.message;
         answer_card.hidden = false;
         return;
     }

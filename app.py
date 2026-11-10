@@ -67,12 +67,13 @@ def guess():
             first_char = answer_row["pinyin"][0]
             tone = get_tone(answer_row["pinyin"])
             if word == answer:
-                message = "Congrats you won!"
+                message = "Congrats you won! Thank you for playing, please come back tommorow."
                 session["finished"] = True
                 game_over = True
             elif guess_count == 6:
                 message = f"You lost. The answer was: {answer}"
                 session["finished"] = True
+                message = "Thank you for playing, please come back tommorow."
                 game_over = True
             if not game_over:
                 if guess_count == 4:

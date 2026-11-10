@@ -17,6 +17,11 @@ html {
     text-size-adjust: 100%;
 }
 
+:root {
+    --guess-cell-size: clamp(56px, calc(20vw - 2px), 68px);
+    --clue-cell-size: clamp(44px, calc(15vw + 1px), 52px);
+}
+
 body {
     margin: 0;
     min-height: 100vh;
@@ -54,7 +59,7 @@ header {
 }
 
 /* ---------- Grid ---------- */
-/* Row width: guess cell 3 + 60 + 9 = 72px, four clue cells 4 x (3 + 48 + 3) = 216px, total 288px (fits 320px) */
+/* Cell sizes scale with the viewport while keeping the board within small phone widths. */
 
 .row {
     display: flex;
@@ -64,33 +69,35 @@ header {
 
 /* Guess cell: bigger square, extra gap after it so it reads "character + its clues" */
 .row .cell:first-child {
-    width: 60px;
-    height: 60px;
-    font-size: 32px;
-    margin-right: 9px;
+    width: var(--guess-cell-size);
+    height: var(--guess-cell-size);
+    font-size: clamp(34px, 9vw, 40px);
+    margin-right: 8px;
 }
 
 /* Clue cells: structure, part 1, part 2, strokes */
 .row .cell:not(:first-child) {
-    width: 48px;
-    height: 48px;
-    font-size: 20px;
+    width: var(--clue-cell-size);
+    height: var(--clue-cell-size);
+    font-size: clamp(22px, 6vw, 26px);
 }
 
 /* ---------- Clue column labels ---------- */
 
 .clue_labels {
     display: flex;
-    width: 288px;
-    padding-left: 72px; /* skip over the guess cell column */
+    width: max-content;
+    padding-left: calc(var(--guess-cell-size) + 11px); /* align with the clue cells */
     margin-bottom: 2px;
 }
 
 .clue_labels span {
-    width: 54px; /* same as one clue cell incl. its margins */
+    width: var(--clue-cell-size);
+    flex: 0 0 var(--clue-cell-size);
+    height: 32px;
     text-align: center;
     white-space: nowrap;
-    font-size: 10px;
+    font-size: clamp(8px, 2.5vw, 10px);
     color: #8e8e93;
 }
 
@@ -187,14 +194,15 @@ header {
 /* ---------- Guess input (lives inside the current row's guess cell) ---------- */
 
 .row .cell:has(#guess_input) {
-    border-color: #8e8e93;
+    border-color: #d7d7df;
+    box-shadow: 0 0 0 2px rgba(215, 215, 223, 0.22);
 }
 
 #guess_input {
     width: 100%;
     height: 100%;
     padding: 0;
-    font-size: 32px; /* 16px or more stops iOS from zooming on focus */
+    font-size: clamp(36px, 10vw, 42px); /* 16px or more stops iOS from zooming on focus */
     font-weight: bold;
     font-family: inherit;
     text-align: center;
@@ -272,7 +280,18 @@ header {
     border-color: #8e8e93;
 }
 
-/* ---------- My own code: .cell and color rules (written by me) ---------- */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+}
+.shake {
+  animation: shake 0.4s;
+}
+
+/* ---------- .cell and color rules ---------- */
 
 .cell {
     width: 52px;
@@ -280,22 +299,23 @@ header {
     display: inline-flex;
     font-size: 24px;
     align-items: center;
-    border: 2px solid #3a3a3c;
+    border: 2px solid #686870;
     margin: 3px;
-    color: white;
+    color: #fff;
     justify-content: center;
-    font-weight: bold;
+    font-weight: 700;
     font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    background-color: #111114;
 }
 
 .green {
-    background-color: #538d4e
+    background-color: #287d37;
 }
 
 .grey {
-    background-color: #3a3a3c;
+    background-color: #484850;
 }
 
 .yellow {
-    background-color: #b59f3b;
+    background-color: #806400;
 }
