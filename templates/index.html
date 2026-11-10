@@ -3,7 +3,7 @@
 {% extends "layout.html" %}
 
 {% block main %}
-<header>INKSTONE</header>
+<header>ZIMO</header>
 <p class="rules">Welcome! if on mobile, feel free to use the drawing keyboard to guess.</p>
 
 <div class="clue_labels">
@@ -34,4 +34,10 @@
         <button type="submit">Send</button>
     </div>
 </form>
+<script id="initial_game_state" type="application/json">{{ {
+    "history": session_history,
+    "finished": game_finished,
+    "answer_info": answer_info,
+    "message": game_message
+} | tojson }}</script>
 {% endblock %}

@@ -5,6 +5,7 @@ const rows = document.querySelectorAll(".row")
 const answer_card = document.querySelector("#answer_card")
 const feedback_form = document.querySelector("#feedback_form")
 const feedback_text = document.querySelector("#feedback_text")
+const initial_state = JSON.parse(document.querySelector("#initial_game_state").textContent)
 
 let row = 0;
 
@@ -81,14 +82,7 @@ feedback_form.addEventListener("submit", async (event) => {
 
 });
 
-// ... all your existing code ...
-
-feedback_form.addEventListener("submit", async (event) => {
-    // ... existing feedback code ...
-});
-
-// new function goes here (or anywhere outside other functions)
-function redraw_history(history) {
+function redraw_history(history, finished = false) {
     if (!history || history.length === 0) return;
 
     for (let i = 0; i < history.length && i < rows.length; i++) {
@@ -105,8 +99,19 @@ function redraw_history(history) {
     }
 
     row = history.length;
-    if (row < rows.length) {
+    if (!finished && row < rows.length) {
         rows[row].querySelector(".cell").appendChild(input);
         input.focus();
+    }
+}
+
+// Restore the board from the session when the player reloads the page.
+redraw_history(initial_state.history, initial_state.finished);
+if (initial_state.finished) {
+    input.remove();
+    message_box.textContent = initial_state.message;
+    if (initial_state.answer_info) {
+        answer_card.textContent = `${initial_state.answer_info.character} ${initial_state.answer_info.pinyin} ${initial_state.answer_info.defintion}`;
+        answer_card.hidden = false;
     }
 }

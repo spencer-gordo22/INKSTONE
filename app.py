@@ -9,7 +9,7 @@ from zoneinfo import ZoneInfo
 
 # AI help: Claude made the DB path absolute (based on this file's folder) so the app runs from any working directory (2026-11-09)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-db = SQL("sqlite:///" + os.path.join(BASE_DIR, "inkstone.db"))
+db = SQL("sqlite:///" + os.path.join(BASE_DIR, "zimo.db"))
 
 
 app = Flask(__name__)
@@ -18,20 +18,32 @@ app.secret_key = os.environ.get("SECRET_KEY", "dev-only-not-secret")
 all_chars = load_characters()
 
 
+def reset_daily_session():
+    today = datetime.now(ZoneInfo("America/New_York")).date().isoformat()
+    if session.get("date") != today:
+        session["date"] = today
+        session["visits"] = 0
+        session["finished"] = False
+        session["history"] = []
+        session.pop("answer_info", None)
+        session.pop("game_message", None)
+
+
 @app.route('/', methods = ['POST', 'GET'])
 def homepage():
-    return render_template("index.html")
+    reset_daily_session()
+    return render_template(
+        "index.html",
+        session_history=session.get("history", []),
+        game_finished=session.get("finished", False),
+        answer_info=session.get("answer_info"),
+        game_message=session.get("game_message", ""),
+    )
 
 @app.route('/guess', methods=['GET', 'POST'])
 def guess():
     if request.method == 'POST':
-        now = datetime.now(ZoneInfo("America/New_York"))
-        today = now.date()
-        today = today.isoformat()
-        if session.get("date", None) != today:
-            session["date"] = today
-            session["visits"] = 0
-            session["finished"] = False
+        reset_daily_session()
         if session.get("finished", False):
             return jsonify ({
                 "message": "Thanks For playing, Please come back tommorow!"
@@ -69,6 +81,8 @@ def guess():
                     hint = f"Pinyin starts with: {first_char}"
             if game_over:
                 answer_info = answer_row
+                session["answer_info"] = answer_row
+                session["game_message"] = message
             session["history"].append ({
                 "guess": word,
                 "same_structure": results[1],
