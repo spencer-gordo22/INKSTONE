@@ -228,7 +228,7 @@ header {
     transform: translate(-50%, -50%);
     width: calc(100% - 32px);
     max-width: 340px;
-    padding: 24px;
+    padding: 28px;
     text-align: center;
     font-size: 18px;
     line-height: 1.5;
@@ -238,6 +238,28 @@ header {
     box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.6), 0 12px 40px rgba(0, 0, 0, 0.8);
     z-index: 10;
     animation: pop 200ms ease-out;
+}
+
+#answer_hanzi {
+    margin-bottom: 10px;
+    color: #dff2e3;
+    font-size: 56px;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+#answer_pinyin {
+    margin-bottom: 7px;
+    color: #bfd9ef;
+    font-size: 18px;
+}
+
+#answer_english {
+    margin-bottom: 12px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 400;
+    overflow-wrap: anywhere;
 }
 
 /* Setting display/position above must not override the hidden attribute */
