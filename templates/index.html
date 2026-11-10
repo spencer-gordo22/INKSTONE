@@ -39,6 +39,12 @@
   <div id="answer_english"></div>
 </div>
 <button id="share_results" hidden>Share your results!</button>
+<div id="stats" hidden>
+  <div>Streak: <span id="streak">0</span></div>
+  <div>Max: <span id="max_streak">0</span></div>
+  <div>Played: <span id="played">0</span></div>
+  <div>Wins: <span id="wins">0</span></div>
+</div>
 <script id="initial_game_state" type="application/json">{{ {
     "history": session_history,
     "finished": game_finished,

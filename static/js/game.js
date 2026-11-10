@@ -68,6 +68,8 @@ async function submit_guess() {
         share.hidden = false
         message_box.textContent = data.message;
         answer_card.hidden = false;
+        const won = data.message && data.message.toLowerCase().includes("congrats");
+        handleGameEnd(won);
         return;
     }
 
@@ -122,6 +124,8 @@ function redraw_history(history, finished = false) {
 redraw_history(initial_state.history, initial_state.finished);
 if (initial_state.finished) {
     input.remove();
+    const won = initial_state.message && initial_state.message.toLowerCase().includes("congrats");
+    handleGameEnd(won);
     message_box.textContent = initial_state.message;
     if (initial_state.answer_info) {
         document.querySelector("#answer_hanzi").textContent = initial_state.answer_info.character;
@@ -141,3 +145,60 @@ share.addEventListener("click", () => {
     }
     navigator.clipboard.writeText(results);
 });
+
+// --- Streak + Stats (localStorage) ---
+const STATS_KEY = "zimo_stats";
+
+function loadStats() {
+  const raw = localStorage.getItem(STATS_KEY);
+  return raw ? JSON.parse(raw) : {
+    currentStreak: 0,
+    maxStreak: 0,
+    gamesPlayed: 0,
+    gamesWon: 0,
+    lastPlayed: null
+  };
+}
+
+function saveStats(stats) {
+  localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+}
+
+function updateStats(won) {
+  const stats = loadStats();
+  const today = new Date().toISOString().slice(0, 10);
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+
+  // Only count once per day
+  if (stats.lastPlayed === today) return stats;
+
+  stats.gamesPlayed++;
+  if (won) {
+    stats.gamesWon++;
+    if (stats.lastPlayed === yesterday) {
+      stats.currentStreak++;
+    } else {
+      stats.currentStreak = 1;
+    }
+    stats.maxStreak = Math.max(stats.maxStreak, stats.currentStreak);
+  } else {
+    stats.currentStreak = 0;
+  }
+  stats.lastPlayed = today;
+  saveStats(stats);
+  return stats;
+}
+
+function showStats(stats) {
+  document.querySelector("#streak").textContent = stats.currentStreak;
+  document.querySelector("#max_streak").textContent = stats.maxStreak;
+  document.querySelector("#played").textContent = stats.gamesPlayed;
+  document.querySelector("#wins").textContent = stats.gamesWon;
+  document.querySelector("#stats").hidden = false;
+}
+
+// Call this when the game ends
+function handleGameEnd(won) {
+  const stats = updateStats(won);
+  showStats(stats);
+}
