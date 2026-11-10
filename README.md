@@ -32,6 +32,8 @@ Streak and game totals are stored in your browser’s `localStorage`, not in the
 
 For deployment, the `Procfile` starts the Flask app with Gunicorn. Install the packages in `requirements.txt` before launching it.
 
+Set a persistent `SECRET_KEY` environment variable in the hosting platform so session cookies remain valid across restarts and workers. Generate a value with `python -c 'import secrets; print(secrets.token_hex(32))'` and keep the same value configured for every app instance. Local development can start without this variable, but its temporary key changes whenever the app process restarts.
+
 ## Design choices
 
 - **Compare on the server:** I chose to compare guesses in Flask because I don’t want the browser to get the answer before the round is over. The browser sends Flask a guess, and `game.py` compares it with the answer and sends feedback back. This keeps the answer out of the browser data until the game ends. It doesn’t hide my source code; it just keeps the answer from being shown early in the game.

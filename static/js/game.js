@@ -56,7 +56,7 @@ async function submit_guess() {
     cell[3].classList.add(data.colors[1])
     cell[4].textContent = `${data.stroke_count}${data.stroke_hint}`;
 
-    message_box.textContent = "" || data.hint || data.message;
+    message_box.textContent = data.hint || data.message || "";
     row++;
     input.value = "";
 
@@ -223,6 +223,7 @@ if (initial_state.finished) {
         document.querySelector("#answer_hanzi").textContent = initial_state.answer_info.character;
         document.querySelector("#answer_pinyin").textContent = initial_state.answer_info.pinyin;
         document.querySelector("#answer_english").textContent = initial_state.answer_info.definition;
+        answer_card.hidden = false;
         share.hidden = false;
     }
 }

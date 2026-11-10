@@ -30,9 +30,7 @@ def positional_helper(char_info):
         return (char_info["radical_1"], "top"), (char_info["radical_2"], "bottom")
     elif char_info["structure"] == "⿰":
         return (char_info["radical_1"], "left"), (char_info["radical_2"], "right")
-    elif char_info["structure"] == "⿺":
-        return (char_info["radical_1"], "outer"), (char_info["radical_2"], "inner")
-    elif char_info["structure"] == "⿵":
+    elif char_info["structure"] in {"⿺", "⿵", "⿸", "⿹", "⿷", "⿶", "⿴"}:
         return (char_info["radical_1"], "outer"), (char_info["radical_2"], "inner")
     elif char_info["structure"] == "⿻":
         return (char_info["radical_1"], "inner"), (char_info["radical_2"], "outer")

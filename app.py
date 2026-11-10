@@ -24,8 +24,8 @@ db = SQL("sqlite:///" + DB_PATH)
 
 
 app = Flask(__name__)
-# AI help: Claude changed the secret key to read from the SECRET_KEY env variable, with a dev-only fallback (2026-11-09)
-app.secret_key = os.environ.get("SECRET_KEY", "dev-only-not-secret")
+# Use a fresh key for local development if no persistent deployment key is configured.
+app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(32)
 all_chars = load_characters()
 
 
@@ -51,9 +51,14 @@ def homepage():
         game_message=session.get("game_message", ""),
     )
 
-@app.route('/guess', methods=['GET', 'POST'])
+@app.route('/guess', methods=['POST'])
 def guess():
     if request.method == 'POST':
+        guess_data = request.get_json(silent=True)
+        if not isinstance(guess_data, dict) or not isinstance(guess_data.get("guess"), str):
+            return jsonify({"message": "Please send a guess as JSON."}), 400
+        word = guess_data["guess"]
+
         reset_daily_session()
         if session.get("finished", False):
             return jsonify ({
@@ -62,8 +67,6 @@ def guess():
         if "history" not in session:
             session["history"] = []
         answer = todays_answer()
-        guess1 = request.get_json()
-        word = guess1["guess"]
         if word in all_chars:
             guess_count = session.get("visits", 0) + 1
             session["visits"] = guess_count
@@ -85,11 +88,10 @@ def guess():
                 message = f"You lost. The answer was: {answer}"
                 session["finished"] = True
                 game_over = True
-            if not game_over:
-                if guess_count == 4:
-                    hint = f"The tone is: {tone}"
-                if guess_count == 5:
-                    hint = f"Pinyin starts with: {first_char}"
+            if not game_over and guess_count >= 4:
+                hint = f"The tone is: {tone}"
+                if guess_count >= 5:
+                    hint += f". Pinyin starts with: {first_char}"
             if game_over:
                 answer_info = answer_row
                 session["answer_info"] = answer_row
@@ -125,8 +127,10 @@ def guess():
 
 @app.route('/feedback', methods = ['POST'])
 def reviews():
-    feedback_text = request.get_json()
-    message = feedback_text["message"]
+    feedback_data = request.get_json(silent=True)
+    if not isinstance(feedback_data, dict) or not isinstance(feedback_data.get("message"), str):
+        return jsonify({"message": "Please send feedback as JSON."}), 400
+    message = feedback_data["message"]
     if not message or len(message) > 1000:
         return jsonify ({
             "message": "Please write between 1 and 1000 characters."
