@@ -62,13 +62,15 @@ async function submit_guess() {
 
     if (data.game_over || row >= rows.length) {
         input.remove();
-        document.querySelector("#answer_hanzi").textContent = data.answer_info.character;
-        document.querySelector("#answer_pinyin").textContent = data.answer_info.pinyin;
-        document.querySelector("#answer_english").textContent = data.answer_info.definition;
-        share.hidden = false
         message_box.textContent = data.message;
         answer_card.hidden = false;
-        const won = data.message && data.message.toLowerCase().includes("congrats");
+        share.hidden = false;
+        if (data.answer_info) {
+            document.querySelector("#answer_hanzi").textContent = data.answer_info.character || "";
+            document.querySelector("#answer_pinyin").textContent = data.answer_info.pinyin || "";
+            document.querySelector("#answer_english").textContent = data.answer_info.definition || "";
+        }
+        const won = Boolean(data.message && data.message.toLowerCase().includes("congrats"));
         handleGameEnd(won);
         return;
     }
@@ -144,18 +146,29 @@ share.addEventListener("click", async () => {
 const STATS_KEY = "zimo_stats";
 
 function loadStats() {
-  const raw = localStorage.getItem(STATS_KEY);
-  return raw ? JSON.parse(raw) : {
+  const defaults = {
     currentStreak: 0,
     maxStreak: 0,
     gamesPlayed: 0,
     gamesWon: 0,
     lastPlayed: null
   };
+  try {
+    const raw = localStorage.getItem(STATS_KEY);
+    if (!raw) return defaults;
+    const stats = JSON.parse(raw);
+    return stats && typeof stats === "object" ? { ...defaults, ...stats } : defaults;
+  } catch {
+    return defaults;
+  }
 }
 
 function saveStats(stats) {
-  localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+  try {
+    localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+  } catch {
+    // Keep the game-over screen available when browser storage is unavailable.
+  }
 }
 
 function updateStats(won) {
@@ -216,14 +229,14 @@ function handleGameEnd(won) {
 
 if (initial_state.finished) {
     input.remove();
-    const won = initial_state.message && initial_state.message.toLowerCase().includes("congrats");
-    handleGameEnd(won);
     message_box.textContent = initial_state.message;
+    answer_card.hidden = false;
+    share.hidden = false;
     if (initial_state.answer_info) {
-        document.querySelector("#answer_hanzi").textContent = initial_state.answer_info.character;
-        document.querySelector("#answer_pinyin").textContent = initial_state.answer_info.pinyin;
-        document.querySelector("#answer_english").textContent = initial_state.answer_info.definition;
-        answer_card.hidden = false;
-        share.hidden = false;
+        document.querySelector("#answer_hanzi").textContent = initial_state.answer_info.character || "";
+        document.querySelector("#answer_pinyin").textContent = initial_state.answer_info.pinyin || "";
+        document.querySelector("#answer_english").textContent = initial_state.answer_info.definition || "";
     }
+    const won = Boolean(initial_state.message && initial_state.message.toLowerCase().includes("congrats"));
+    handleGameEnd(won);
 }
