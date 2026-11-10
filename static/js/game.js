@@ -122,8 +122,8 @@ if (initial_state.finished) {
     input.remove();
     message_box.textContent = initial_state.message;
     if (initial_state.answer_info) {
-        document.querySelector("#answer_hanzi").textContent = data.answer_info.character;
-        document.querySelector("#answer_pinyin").textContent = data.answer_info.pinyin;
-        document.querySelector("#answer_english").textContent = data.answer_info.definition;
+       document.querySelector("#answer_hanzi").textContent = initial_state.answer_info.character;
+        document.querySelector("#answer_pinyin").textContent = initial_state.answer_info.pinyin;
+        document.querySelector("#answer_english").textContent = initial_state.answer_info.definition;
     }
 }
