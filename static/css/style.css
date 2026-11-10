@@ -1,156 +1,392 @@
+/* AI help: Claude Code wrote the styling around my .cell and color rules (2026-11-09) */
+/* AI help: Claude Code restyled the board: big guess cell, smaller clue cells, clue labels, flip animation (2026-11-09) */
+/* AI help: Claude created this skeleton file (imports only, no logic) (2026-11-01) */
+/* AI help: Claude Code styled the feedback form and its Feedback label (2026-11-09) */
+/* AI help: Claude Code replaced the bottom guess bar styles with an input that fills the guess cell (2026-11-09) */
+
+/* ---------- Page ---------- */
+
 *,
 *::before,
-*::after { box-sizing: border-box; }
-
-:root {
-    color-scheme: light;
-    --ink: #222b2a;
-    --muted: #75817d;
-    --line: #dce5df;
-    --paper: #fffefa;
-    --guess-size: clamp(58px, 15vw, 72px);
-    --clue-size: clamp(48px, 12.2vw, 60px);
-    --board-gap: clamp(5px, 1.6vw, 9px);
+*::after {
+    box-sizing: border-box;
 }
 
-html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+:root {
+    --guess-cell-size: clamp(56px, calc(20vw - 2px), 68px);
+    --clue-cell-size: clamp(44px, calc(15vw + 1px), 52px);
+}
 
 body {
     margin: 0;
     min-height: 100vh;
     min-height: 100dvh;
-    padding: 24px 16px;
-    display: flex;
-    justify-content: center;
-    color: var(--ink);
-    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue",
-                 "Segoe UI", "Microsoft YaHei", Roboto, sans-serif;
-    background:
-        radial-gradient(ellipse at 50% -15%, rgba(190, 220, 202, .58), transparent 52%),
-        #f3f6f1;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.game_shell {
-    width: min(100%, 520px);
-    min-height: calc(100dvh - 48px);
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 22px clamp(14px, 4vw, 28px) 18px;
-    background: rgba(255, 254, 250, .92);
-    border: 1px solid rgba(210, 222, 213, .9);
-    border-radius: 26px;
-    box-shadow: 0 18px 55px rgba(47, 75, 58, .09);
-}
-
-.site_header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding-bottom: 17px;
-    width: 100%;
-    justify-content: center;
-    border-bottom: 1px solid #e8ede8;
-}
-
-.brand_mark {
-    display: grid;
-    place-items: center;
-    width: 44px;
-    height: 44px;
+    background-color: #000;
     color: #fff;
-    background: #527d63;
-    border-radius: 14px;
-    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
-    font-size: 24px;
-    box-shadow: 0 5px 12px rgba(69, 116, 83, .18);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue",
+                 "Segoe UI", "Microsoft YaHei", Roboto, sans-serif;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.site_header h1 { margin: 0; font-size: 25px; line-height: 1.05; letter-spacing: .02em; }
-.eyebrow { margin: 0 0 4px; color: var(--muted); font-size: 10px; font-weight: 750; letter-spacing: .13em; text-transform: uppercase; }
-.rules { max-width: 360px; margin: 14px 0 23px; text-align: center; font-size: 14px; line-height: 1.5; color: #65716c; }
+/* ---------- Title + rules ---------- */
 
-.game_board { width: max-content; max-width: 100%; }
-.row { display: flex; justify-content: center; align-items: center; gap: var(--board-gap); margin-bottom: var(--board-gap); }
+header {
+    width: 100%;
+    padding: 16px 16px 8px;
+    text-align: center;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    border-bottom: 1px solid #3a3a3c;
+}
 
+.rules {
+    max-width: 360px;
+    margin: 8px 16px 16px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #8e8e93;
+}
+
+/* ---------- Grid ---------- */
+/* Cell sizes scale with the viewport while keeping the board within small phone widths. */
+
+.row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Guess cell: bigger square, extra gap after it so it reads "character + its clues" */
 .row .cell:first-child {
-    width: var(--guess-size);
-    height: var(--guess-size);
-    flex: 0 0 var(--guess-size);
-    font-size: clamp(36px, 9vw, 44px);
-    margin-right: 3px;
+    width: var(--guess-cell-size);
+    height: var(--guess-cell-size);
+    font-size: clamp(34px, 9vw, 40px);
+    margin-right: 8px;
 }
 
+/* Clue cells: structure, part 1, part 2, strokes */
 .row .cell:not(:first-child) {
-    width: var(--clue-size);
-    height: var(--clue-size);
-    flex: 0 0 var(--clue-size);
-    font-size: clamp(21px, 5.8vw, 28px);
+    width: var(--clue-cell-size);
+    height: var(--clue-cell-size);
+    font-size: clamp(22px, 6vw, 26px);
 }
 
-.clue_labels { display: flex; align-items: end; gap: var(--board-gap); margin-bottom: 9px; }
-.clue_labels span { height: 33px; display: flex; justify-content: center; align-items: center; text-align: center; color: #78847e; font-size: clamp(9px, 2.65vw, 11px); font-weight: 700; line-height: 1.12; }
-.clue_labels .guess_label { width: var(--guess-size); flex: 0 0 var(--guess-size); margin-right: 3px; }
-.clue_labels .clue_label { width: var(--clue-size); flex: 0 0 var(--clue-size); }
+/* ---------- Clue column labels ---------- */
+
+.clue_labels {
+    display: flex;
+    width: max-content;
+    padding-left: calc(var(--guess-cell-size) + 11px); /* align with the clue cells */
+    margin-bottom: 2px;
+}
+
+.clue_labels span {
+    display: inline-flex;
+    width: var(--clue-cell-size);
+    flex: 0 0 var(--clue-cell-size);
+    height: 32px;
+    margin: 3px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: clamp(8px, 2.5vw, 10px);
+    color: #8e8e93;
+}
+
+/* ---------- Flip animation when a cell gets a color ---------- */
+/* Two animations: "flip" turns the cell, "flip_color" hides the new color
+   until the cell is edge-on halfway through (150ms), so it flips into its color. */
+
+.row .cell.green,
+.row .cell.yellow,
+.row .cell.grey {
+    animation:
+        flip 300ms ease-in-out backwards,
+        flip_color 150ms step-end backwards;
+}
+
+.row .cell:nth-child(2) { animation-delay: 0ms; }
+.row .cell:nth-child(3) { animation-delay: 150ms; }
+.row .cell:nth-child(4) { animation-delay: 300ms; }
+.row .cell:nth-child(5) { animation-delay: 450ms; }
+
+@keyframes flip {
+    0%   { transform: rotateX(0deg); }
+    50%  { transform: rotateX(90deg); }
+    100% { transform: rotateX(0deg); }
+}
+
+@keyframes flip_color {
+    from { background-color: transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .row .cell.green,
+    .row .cell.yellow,
+    .row .cell.grey {
+        animation: none;
+    }
+}
+
+/* ---------- Message ---------- */
+
+#message {
+    min-height: 28px;
+    max-width: 360px;
+    margin: 12px 16px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+/* ---------- Share and stats ---------- */
+
+#share_results {
+    margin: 8px 16px 0;
+    padding: 11px 16px;
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    background: #1b1b20;
+    border: 1px solid #777780;
+    border-radius: 9px;
+    cursor: pointer;
+}
+
+#share_results:hover {
+    background: #29292f;
+}
+
+#stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    width: calc(100% - 32px);
+    max-width: 360px;
+    margin: 12px 16px 0;
+    padding: 12px;
+    color: #ededf0;
+    background: #111114;
+    border: 1px solid #686870;
+    border-radius: 12px;
+}
+
+#stats[hidden],
+#share_results[hidden],
+#next_game_note[hidden] {
+    display: none;
+}
+
+#stats > div {
+    display: flex;
+    min-height: 64px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px;
+    color: #bcbcc4;
+    font-size: 12px;
+    font-weight: 600;
+    background: #1b1b20;
+    border: 1px solid #38383f;
+    border-radius: 8px;
+}
+
+#stats span {
+    color: #fff;
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+#next_game_note {
+    margin: 8px 16px 0;
+    color: #bcbcc4;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* ---------- Answer card ---------- */
+
+#answer_card {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100% - 32px);
+    max-width: 340px;
+    padding: 24px;
+    text-align: center;
+    font-size: 18px;
+    line-height: 1.5;
+    background-color: #121213;
+    border: 1px solid #3a3a3c;
+    border-radius: 12px;
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.6), 0 12px 40px rgba(0, 0, 0, 0.8);
+    z-index: 10;
+    animation: pop 200ms ease-out;
+}
+
+/* Setting display/position above must not override the hidden attribute */
+#answer_card[hidden] {
+    display: none;
+}
+
+@keyframes pop {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #answer_card {
+        animation: none;
+    }
+}
+
+/* ---------- Guess input (lives inside the current row's guess cell) ---------- */
+
+.row .cell:has(#guess_input) {
+    border-color: #d7d7df;
+    box-shadow: 0 0 0 2px rgba(215, 215, 223, 0.22);
+}
+
+#guess_input {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    font-size: clamp(36px, 10vw, 42px); /* 16px or more stops iOS from zooming on focus */
+    font-weight: bold;
+    font-family: inherit;
+    text-align: center;
+    color: #fff;
+    caret-color: #fff;
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+.type_hint {
+    margin: 10px 16px 0;
+    font-size: 12px;
+    color: #8e8e93;
+    text-align: center;
+}
+
+/* ---------- Feedback form ---------- */
+
+#feedback_form {
+    margin-top: auto; /* keeps it at the bottom of the page */
+    width: 100%;
+    max-width: 420px;
+    padding: 4px 16px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.feedback_title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8e8e93;
+}
+
+.feedback_row {
+    display: flex;
+    gap: 8px;
+}
+
+#feedback_text {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 12px;
+    font-size: 16px;
+    font-family: inherit;
+    color: #fff;
+    background-color: #121213;
+    border: 1px solid #3a3a3c;
+    border-radius: 8px;
+    outline: none;
+    resize: none;
+}
+
+#feedback_text:focus {
+    border-color: #8e8e93;
+}
+
+#feedback_form button {
+    align-self: stretch;
+    padding: 0 18px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: inherit;
+    color: #fff;
+    background-color: transparent;
+    border: 1px solid #3a3a3c;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#feedback_form button:hover {
+    border-color: #8e8e93;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-6px); }
+  80% { transform: translateX(6px); }
+}
+.shake {
+  animation: shake 0.4s;
+}
+
+/* ---------- .cell and color rules ---------- */
 
 .cell {
+    width: 52px;
+    height: 52px;
     display: inline-flex;
+    font-size: 24px;
     align-items: center;
+    border: 2px solid #686870;
+    margin: 3px;
+    color: #fff;
     justify-content: center;
-    margin: 0;
-    color: var(--ink);
-    background: #fff;
-    border: 1.5px solid #d5dfd8;
-    border-radius: 13px;
-    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
     font-weight: 700;
-    transition: background-color .22s ease, border-color .22s ease, color .22s ease, transform .2s ease, box-shadow .2s ease;
+    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    background-color: #111114;
 }
 
-.row .cell.green { color: #fff; background: #5a9b6c; border-color: #5a9b6c; }
-.row .cell.yellow { color: #fff; background: #d7a844; border-color: #d7a844; }
-.row .cell.grey { color: #fff; background: #8b9690; border-color: #8b9690; }
-.row .cell.green, .row .cell.yellow, .row .cell.grey { animation: tile-in .28s ease-out both; }
-.row .cell:nth-child(2) { animation-delay: 0ms; }
-.row .cell:nth-child(3) { animation-delay: 70ms; }
-.row .cell:nth-child(4) { animation-delay: 140ms; }
-.row .cell:nth-child(5) { animation-delay: 210ms; }
-@keyframes tile-in { from { transform: scale(.92); } to { transform: scale(1); } }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+.green {
+    background-color: #287d37;
+}
 
-.row .cell:has(#guess_input) { border-color: #649273; box-shadow: 0 0 0 3px rgba(100, 146, 115, .15); }
-#guess_input { width: 100%; height: 100%; padding: 0; border: 0; outline: 0; background: transparent; color: var(--ink); caret-color: #527d63; text-align: center; font-family: inherit; font-size: clamp(38px, 10vw, 46px); font-weight: 700; line-height: 1; }
-.type_hint { margin: 10px 0 0; color: #87918b; font-size: 12px; text-align: center; }
-kbd { padding: 2px 6px; color: #65716c; background: #f0f3ef; border: 1px solid #dce3dd; border-radius: 5px; font: inherit; }
+.grey {
+    background-color: #484850;
+}
 
-#message { width: 100%; min-height: 42px; margin: 13px 0 0; padding: 10px 14px; display: grid; place-items: center; color: #52645a; background: #f2f6f1; border: 1px solid #e2eae2; border-radius: 12px; text-align: center; font-size: 14px; font-weight: 650; line-height: 1.4; }
-
-#share_results { margin: 12px 0 0; padding: 11px 17px; color: #fff; font: inherit; font-weight: 700; background: #527d63; border: 0; border-radius: 10px; cursor: pointer; }
-#share_results:hover { background: #426b53; }
-#stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; margin: 12px 0 0; padding: 10px; color: #65716c; background: #f4f6f2; border: 1px solid #e2e8e1; border-radius: 14px; }
-#stats[hidden], #share_results[hidden], #next_game_note[hidden], #answer_card[hidden] { display: none; }
-#stats > div { display: flex; min-height: 58px; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 8px; background: #fff; border: 1px solid #e7ece6; border-radius: 10px; font-size: 12px; font-weight: 650; }
-#stats span { color: var(--ink); font-size: 23px; font-weight: 800; line-height: 1; }
-#next_game_note { margin: 9px 0 0; color: #7b8780; font-size: 12px; text-align: center; }
-
-#answer_card { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: calc(100% - 32px); max-width: 340px; padding: 24px; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 0 0 100vmax rgba(24, 39, 30, .48), 0 16px 48px rgba(29, 51, 36, .2); z-index: 10; text-align: center; font-size: 18px; line-height: 1.5; animation: pop .2s ease-out; }
-@keyframes pop { from { opacity: 0; transform: translate(-50%, -50%) scale(.94); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
-
-#feedback_form { width: 100%; margin-top: auto; padding-top: 22px; display: flex; flex-direction: column; gap: 8px; }
-.feedback_title { color: #78847e; font-size: 10px; font-weight: 750; letter-spacing: .13em; text-transform: uppercase; }
-.feedback_row { display: flex; gap: 8px; }
-#feedback_text { flex: 1; min-width: 0; padding: 10px 12px; color: var(--ink); background: #fff; border: 1px solid #dce5df; border-radius: 10px; outline: none; resize: vertical; font-family: inherit; font-size: 14px; line-height: 1.4; }
-#feedback_text:focus { border-color: #8aaa93; box-shadow: 0 0 0 3px rgba(100, 146, 115, .12); }
-#feedback_form button { align-self: stretch; padding: 0 17px; color: #fff; background: #527d63; border: 0; border-radius: 10px; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
-#feedback_form button:hover { background: #426b53; }
-
-@keyframes shake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
-.shake { animation: shake .4s; }
-
-@media (max-width: 390px) {
-    body { padding: 0; background: #f7f8f4; }
-    .game_shell { min-height: 100dvh; padding: 18px 10px 16px; border: 0; border-radius: 0; box-shadow: none; }
-    :root { --guess-size: clamp(52px, 14vw, 58px); --clue-size: clamp(42px, 11.3vw, 47px); --board-gap: 5px; }
-    .cell { border-radius: 11px; }
+.yellow {
+    background-color: #806400;
 }
