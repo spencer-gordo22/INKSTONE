@@ -68,7 +68,7 @@ async function submit_guess() {
         if (data.answer_info) {
             document.querySelector("#answer_hanzi").textContent = data.answer_info.character || "";
             document.querySelector("#answer_pinyin").textContent = data.answer_info.pinyin || "";
-            document.querySelector("#answer_english").textContent = data.answer_info.definition || "";
+            document.querySelector("#answer_english").textContent = data.answer_info.definition || data.answer_info.defintion || "";
         }
         const won = Boolean(data.message && data.message.toLowerCase().includes("congrats"));
         handleGameEnd(won);
@@ -235,7 +235,7 @@ if (initial_state.finished) {
     if (initial_state.answer_info) {
         document.querySelector("#answer_hanzi").textContent = initial_state.answer_info.character || "";
         document.querySelector("#answer_pinyin").textContent = initial_state.answer_info.pinyin || "";
-        document.querySelector("#answer_english").textContent = initial_state.answer_info.definition || "";
+        document.querySelector("#answer_english").textContent = initial_state.answer_info.definition || initial_state.answer_info.defintion || "";
     }
     const won = Boolean(initial_state.message && initial_state.message.toLowerCase().includes("congrats"));
     handleGameEnd(won);
