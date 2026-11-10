@@ -20,6 +20,9 @@ async function submit_guess() {
     const guess = input.value.trim();
     if (guess === "") {
         rows[row].classList.add("shake");
+        setTimeout(() => {
+            rows[row].classList.remove("shake");
+        }, 400);
         return;
     }
 
@@ -37,6 +40,7 @@ async function submit_guess() {
         setTimeout(() => {
             rows[row].classList.remove("shake");
         }, 400);
+        return;
     }
 
     const current_row = rows[row]
