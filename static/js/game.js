@@ -61,7 +61,9 @@ async function submit_guess() {
 
     if (data.game_over || row >= rows.length) {
         input.remove();
-        answer_card.textContent = `${data.answer_info.character} ${data.answer_info.pinyin} ${data.answer_info.defintion}`;
+        document.querySelector("#answer_hanzi").textContent = data.answer_info.character;
+        document.querySelector("#answer_pinyin").textContent = data.answer_info.pinyin;
+        document.querySelector("#answer_english").textContent = data.answer_info.definition;
         message_box.textContent = data.message;
         answer_card.hidden = false;
         return;
@@ -120,7 +122,8 @@ if (initial_state.finished) {
     input.remove();
     message_box.textContent = initial_state.message;
     if (initial_state.answer_info) {
-        answer_card.textContent = `${initial_state.answer_info.character} ${initial_state.answer_info.pinyin} ${initial_state.answer_info.defintion}`;
-        answer_card.hidden = false;
+        document.querySelector("#answer_hanzi").textContent = data.answer_info.character;
+        document.querySelector("#answer_pinyin").textContent = data.answer_info.pinyin;
+        document.querySelector("#answer_english").textContent = data.answer_info.definition;
     }
 }
