@@ -159,14 +159,15 @@ header {
     color: #fff;
     font: inherit;
     font-weight: 700;
-    background: #1b1b20;
-    border: 1px solid #777780;
+    background: linear-gradient(135deg, #2f9e5a, #1f7a44);
+    border: 1px solid #5fd08a;
+    box-shadow: 0 4px 14px rgba(63, 185, 112, 0.3);
     border-radius: 9px;
     cursor: pointer;
 }
 
 #share_results:hover {
-    background: #29292f;
+    background: linear-gradient(135deg, #38b468, #248a4e);
 }
 
 #stats {
@@ -178,8 +179,8 @@ header {
     margin: 12px 16px 0;
     padding: 12px;
     color: #ededf0;
-    background: #111114;
-    border: 1px solid #686870;
+    background: #0f1612;
+    border: 1px solid #2f6b47;
     border-radius: 12px;
 }
 
@@ -200,13 +201,13 @@ header {
     color: #bcbcc4;
     font-size: 12px;
     font-weight: 600;
-    background: #1b1b20;
-    border: 1px solid #38383f;
+    background: #16211a;
+    border: 1px solid #2a4a36;
     border-radius: 8px;
 }
 
 #stats span {
-    color: #fff;
+    color: #6ee79a;
     font-size: 24px;
     font-weight: 800;
     line-height: 1;
@@ -233,9 +234,9 @@ header {
     font-size: 18px;
     line-height: 1.5;
     background-color: #121213;
-    border: 1px solid #3a3a3c;
+    border: 1px solid #2f6b47;
     border-radius: 12px;
-    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.6), 0 12px 40px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.6), 0 0 32px rgba(63, 185, 112, 0.18), 0 12px 40px rgba(0, 0, 0, 0.8);
     z-index: 10;
     animation: pop 200ms ease-out;
 }
