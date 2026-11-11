@@ -127,6 +127,15 @@ function redraw_history(history, finished = false) {
 // Restore the board from the session when the player reloads the page.
 redraw_history(initial_state.history, initial_state.finished);
 
+const copy_toast = document.querySelector("#copy_toast");
+let copy_toast_timer;
+
+function show_copy_toast() {
+    copy_toast.classList.add("show");
+    clearTimeout(copy_toast_timer);
+    copy_toast_timer = setTimeout(() => copy_toast.classList.remove("show"), 1800);
+}
+
 share.addEventListener("click", async () => {
     const symbols = { green: "🟩", yellow: "🟨", grey: "⬛" };
     const results = [`Zimo ${row}/6`];
@@ -138,7 +147,7 @@ share.addEventListener("click", async () => {
     }
     try {
         await navigator.clipboard.writeText(results.join("\n"));
-        message_box.textContent = "Results copied!";
+        show_copy_toast();
     } catch {
         message_box.textContent = "Could not copy results on this browser.";
     }

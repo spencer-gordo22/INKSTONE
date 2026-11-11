@@ -502,3 +502,35 @@ header {
 .yellow {
     background-color: #806400;
 }
+
+/* ---------- Copy toast ---------- */
+
+#copy_toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(24px + env(safe-area-inset-bottom));
+    z-index: 1000;
+    padding: 10px 16px;
+    color: #fff;
+    font-weight: 700;
+    background: #1f7a44;
+    border: 1px solid #5fd08a;
+    border-radius: 9px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    transform: translate(-50%, 12px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+}
+
+#copy_toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #copy_toast {
+        transition: opacity 0.2s ease;
+        transform: translate(-50%, 0);
+    }
+}
