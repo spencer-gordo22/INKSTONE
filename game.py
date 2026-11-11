@@ -73,9 +73,9 @@ def todays_answer():
 
 def stroke_display (stroke_difference):
     if stroke_difference > 0:
-        return "⬆"
+        return f"+{stroke_difference}⬆"
     elif stroke_difference < 0:
-        return "⬇"
+        return f"{stroke_difference}⬇"
     else:
         return "✓"
 

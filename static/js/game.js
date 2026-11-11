@@ -54,7 +54,7 @@ async function submit_guess() {
     cell[2].classList.add(data.colors[0])
     cell[3].textContent = data.parts[1]
     cell[3].classList.add(data.colors[1])
-    cell[4].textContent = `${data.stroke_count}${data.stroke_hint}`;
+    cell[4].textContent = data.stroke_hint;
 
     message_box.textContent = data.hint || data.message || "";
     row++;
@@ -114,7 +114,7 @@ function redraw_history(history, finished = false) {
         cells[2].classList.add(data.colors[0]);
         cells[3].textContent = data.parts[1];
         cells[3].classList.add(data.colors[1]);
-        cells[4].textContent = data.stroke_count + data.stroke_hint;
+        cells[4].textContent = data.stroke_hint;
     }
 
     row = history.length;
