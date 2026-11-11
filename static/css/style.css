@@ -285,6 +285,36 @@ header {
     }
 }
 
+/* ---------- View puzzle / show results ---------- */
+
+#view_puzzle,
+#show_results {
+    margin: 12px auto 0;
+    padding: 9px 16px;
+    color: #6ee79a;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    background: transparent;
+    border: 1px solid #2f6b47;
+    border-radius: 9px;
+    cursor: pointer;
+}
+
+#show_results {
+    display: block;
+}
+
+#view_puzzle:hover,
+#show_results:hover {
+    background: #16211a;
+}
+
+#view_puzzle[hidden],
+#show_results[hidden] {
+    display: none;
+}
+
 /* ---------- Win celebration ---------- */
 
 #win_banner {

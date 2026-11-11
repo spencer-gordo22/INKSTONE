@@ -71,6 +71,7 @@ async function submit_guess() {
             document.querySelector("#answer_english").textContent = data.answer_info.definition || data.answer_info.defintion || "";
         }
         const won = Boolean(data.message && data.message.toLowerCase().includes("congrats"));
+        if (won) message_box.textContent = "";
         handleGameEnd(won);
         if (won) celebrate(true);
         return;
@@ -204,6 +205,7 @@ function showStats(stats) {
   document.querySelector("#wins").textContent = stats.gamesWon;
   document.querySelector("#stats").hidden = false;
   document.querySelector("#next_game_note").hidden = false;
+  view_puzzle.hidden = false;
 }
 
 function gameDate(date = new Date()) {
@@ -252,6 +254,20 @@ function celebrate(live) {
   setTimeout(() => layer.remove(), 5000);
 }
 
+// "View your puzzle" hides the card; "Show results" brings it back
+const view_puzzle = document.querySelector("#view_puzzle")
+const show_results = document.querySelector("#show_results")
+
+view_puzzle.addEventListener("click", () => {
+  answer_card.hidden = true;
+  show_results.hidden = false;
+});
+
+show_results.addEventListener("click", () => {
+  answer_card.hidden = false;
+  show_results.hidden = true;
+});
+
 // Call this when the game ends
 function handleGameEnd(won) {
   const stats = updateStats(won);
@@ -269,6 +285,7 @@ if (initial_state.finished) {
         document.querySelector("#answer_english").textContent = initial_state.answer_info.definition || initial_state.answer_info.defintion || "";
     }
     const won = Boolean(initial_state.message && initial_state.message.toLowerCase().includes("congrats"));
+    if (won) message_box.textContent = "";
     handleGameEnd(won);
     if (won) celebrate(false);
 }

@@ -26,6 +26,7 @@
 
 <p class="type_hint">Type your character in the box, then press Enter</p>
 <div id="message"></div>
+<button id="show_results" hidden>🏆 Show results</button>
 <form id="feedback_form">
     <label for="feedback_text" class="feedback_title">Feedback</label>
     <div class="feedback_row">
@@ -46,6 +47,7 @@
     <div>✅ Wins <span id="wins">0</span></div>
   </div>
   <p id="next_game_note" hidden>🌙 New game tomorrow at midnight Eastern Time. ⏰</p>
+  <button id="view_puzzle" hidden>🧩 View your puzzle</button>
 </div>
 <script id="initial_game_state" type="application/json">{{ {
     "history": session_history,
