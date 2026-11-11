@@ -127,13 +127,41 @@ function redraw_history(history, finished = false) {
 // Restore the board from the session when the player reloads the page.
 redraw_history(initial_state.history, initial_state.finished);
 
-const copy_toast = document.querySelector("#copy_toast");
+const copy_toast = document.createElement("div");
+copy_toast.id = "copy_toast";
+copy_toast.setAttribute("role", "status");
+copy_toast.setAttribute("aria-live", "polite");
+document.body.appendChild(copy_toast);
 let copy_toast_timer;
 
-function show_copy_toast() {
+function show_copy_toast(text) {
+    copy_toast.textContent = text;
     copy_toast.classList.add("show");
     clearTimeout(copy_toast_timer);
     copy_toast_timer = setTimeout(() => copy_toast.classList.remove("show"), 1800);
+}
+
+// navigator.clipboard only works on https or localhost, so fall back to the older copy command.
+async function copy_text(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+        try {
+            await navigator.clipboard.writeText(text);
+            return true;
+        } catch {}
+    }
+    const temp = document.createElement("textarea");
+    temp.value = text;
+    temp.setAttribute("readonly", "");
+    temp.style.position = "fixed";
+    temp.style.opacity = "0";
+    document.body.appendChild(temp);
+    temp.select();
+    let copied = false;
+    try {
+        copied = document.execCommand("copy");
+    } catch {}
+    temp.remove();
+    return copied;
 }
 
 share.addEventListener("click", async () => {
@@ -145,11 +173,10 @@ share.addEventListener("click", async () => {
         const color2 = ["green", "yellow", "grey"].find(color => cells[3].classList.contains(color));
         results.push((symbols[color1] || "⬛") + (symbols[color2] || "⬛"));
     }
-    try {
-        await navigator.clipboard.writeText(results.join("\n"));
-        show_copy_toast();
-    } catch {
-        message_box.textContent = "Could not copy results on this browser.";
+    if (await copy_text(results.join("\n"))) {
+        show_copy_toast("📋 Copied to clipboard!");
+    } else {
+        show_copy_toast("Couldn't copy on this browser");
     }
 });
 
