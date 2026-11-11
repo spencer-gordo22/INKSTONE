@@ -72,6 +72,7 @@ async function submit_guess() {
         }
         const won = Boolean(data.message && data.message.toLowerCase().includes("congrats"));
         handleGameEnd(won);
+        if (won) celebrate(true);
         return;
     }
 
@@ -221,6 +222,36 @@ function shiftGameDate(dateString, days) {
   return new Date(Date.UTC(year, month - 1, day + days)).toISOString().slice(0, 10);
 }
 
+// Win celebration: banner on the card, plus a confetti burst when the win just happened
+function celebrate(live) {
+  document.querySelector("#win_banner").hidden = false;
+  answer_card.classList.add("won");
+  if (!live || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  const pieces = ["🎉", "✨", "🎊", "⭐", "💚", "🔥", "🥳"];
+  const colors = ["#6ee79a", "#3fb970", "#ffd166", "#ff6b9a", "#7cc4ff", "#c792ff"];
+  const layer = document.createElement("div");
+  layer.className = "confetti_layer";
+  for (let i = 0; i < 70; i++) {
+    const bit = document.createElement("span");
+    bit.className = "confetti";
+    if (i % 3 === 0) {
+      bit.textContent = pieces[i % pieces.length];
+    } else {
+      bit.classList.add("confetti_bit");
+      bit.style.background = colors[i % colors.length];
+    }
+    bit.style.left = `${Math.random() * 100}vw`;
+    bit.style.setProperty("--drift", `${(Math.random() - 0.5) * 200}px`);
+    bit.style.setProperty("--spin", `${(Math.random() - 0.5) * 1080}deg`);
+    bit.style.animationDuration = `${2.2 + Math.random() * 1.8}s`;
+    bit.style.animationDelay = `${Math.random() * 0.6}s`;
+    layer.appendChild(bit);
+  }
+  document.body.appendChild(layer);
+  setTimeout(() => layer.remove(), 5000);
+}
+
 // Call this when the game ends
 function handleGameEnd(won) {
   const stats = updateStats(won);
@@ -239,4 +270,5 @@ if (initial_state.finished) {
     }
     const won = Boolean(initial_state.message && initial_state.message.toLowerCase().includes("congrats"));
     handleGameEnd(won);
+    if (won) celebrate(false);
 }

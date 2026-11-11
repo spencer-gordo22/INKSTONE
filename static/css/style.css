@@ -285,6 +285,65 @@ header {
     }
 }
 
+/* ---------- Win celebration ---------- */
+
+#win_banner {
+    margin-bottom: 14px;
+    color: #6ee79a;
+    font-size: 22px;
+    font-weight: 800;
+    animation: banner_bounce 600ms ease-out;
+}
+
+#win_banner[hidden] {
+    display: none;
+}
+
+#answer_card.won {
+    border-color: #3fb970;
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.6), 0 0 48px rgba(63, 185, 112, 0.35), 0 12px 40px rgba(0, 0, 0, 0.8);
+}
+
+.confetti_layer {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.confetti {
+    position: absolute;
+    top: -40px;
+    font-size: 22px;
+    animation: confetti_fall linear forwards;
+}
+
+.confetti_bit {
+    width: 9px;
+    height: 14px;
+    border-radius: 2px;
+}
+
+@keyframes confetti_fall {
+    to {
+        transform: translate(var(--drift), 110vh) rotate(var(--spin));
+        opacity: 0.9;
+    }
+}
+
+@keyframes banner_bounce {
+    0% { transform: scale(0.4); opacity: 0; }
+    60% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #win_banner {
+        animation: none;
+    }
+}
+
 /* ---------- Guess input (lives inside the current row's guess cell) ---------- */
 
 .row .cell:has(#guess_input) {
