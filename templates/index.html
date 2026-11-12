@@ -4,12 +4,16 @@
 
 {% block main %}
 <header>ZIMO</header>
-<p class="rules">Welcome! if on mobile, feel free to use the drawing keyboard to guess.</p>
+<div id="tip" class="tip" hidden>
+    <p>Welcome! If on mobile, feel free to use the handwriting keyboard to guess.<br>
+    Strokes: <b>+3</b> means the answer has 3 more strokes than your guess, <b>-3</b> means 3 fewer.</p>
+    <button id="tip_close" type="button" aria-label="Dismiss tip">✕</button>
+</div>
 
 <div class="clue_labels">
-    <span>Structure</span>
-    <span>First<br>Radical</span>
-    <span>Second<br>Radical</span>
+    <span>Struct</span>
+    <span>Rad 1</span>
+    <span>Rad 2</span>
     <span>Strokes</span>
 </div>
 

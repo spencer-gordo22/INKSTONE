@@ -35,6 +35,12 @@ body {
                  "Segoe UI", "Microsoft YaHei", Roboto, sans-serif;
     overflow-x: hidden;
     -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+}
+
+/* Extra room at the bottom on phones so the board can scroll above the on-screen keyboard */
+@media (pointer: coarse) {
+    body { padding-bottom: 160px; }
 }
 
 /* ---------- Title + rules ---------- */
@@ -47,6 +53,34 @@ header {
     font-weight: 800;
     letter-spacing: 0.2em;
     border-bottom: 1px solid #3a3a3c;
+}
+
+.tip {
+    position: relative;
+    max-width: 360px;
+    margin: 8px 16px 12px;
+    padding: 10px 34px 10px 12px;
+    border-radius: 10px;
+    background: #1c1c1e;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #c7c7cc;
+    text-align: center;
+}
+
+.tip p { margin: 0; }
+
+.tip button {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 28px;
+    height: 28px;
+    border: 0;
+    background: none;
+    color: #8e8e93;
+    font-size: 14px;
+    cursor: pointer;
 }
 
 .rules {

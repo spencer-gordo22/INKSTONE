@@ -10,6 +10,27 @@ const share = document.querySelector("#share_results")
 
 let row = 0;
 
+// Keep the board visible above the on-screen keyboard
+function keep_board_in_view() {
+    if (!window.matchMedia("(pointer: coarse)").matches) return; // phones/tablets only
+    setTimeout(() => {
+        const current = rows[Math.min(row, rows.length - 1)];
+        current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 300); // wait for the keyboard to finish opening
+}
+input.addEventListener("focus", keep_board_in_view);
+
+// One-time tip: show until dismissed
+const TIP_KEY = "zimo_tip_dismissed";
+const tip = document.querySelector("#tip");
+let tip_dismissed = false;
+try { tip_dismissed = localStorage.getItem(TIP_KEY) === "1"; } catch {}
+if (!tip_dismissed) tip.hidden = false;
+document.querySelector("#tip_close").addEventListener("click", () => {
+    tip.hidden = true;
+    try { localStorage.setItem(TIP_KEY, "1"); } catch {}
+});
+
 input.addEventListener("keydown", (event) => {
     if (event.key === "Enter" && !event.isComposing) {
         event.preventDefault();
@@ -234,6 +255,16 @@ function updateStats(won) {
   return stats;
 }
 
+// If a day was missed without a win, the streak is broken
+function expireStreak() {
+  const stats = loadStats();
+  const yesterday = shiftGameDate(gameDate(), -1);
+  if (stats.currentStreak > 0 && stats.lastPlayed && stats.lastPlayed < yesterday) {
+    stats.currentStreak = 0;
+    saveStats(stats);
+  }
+}
+
 function showStats(stats) {
   document.querySelector("#streak").textContent = stats.currentStreak;
   document.querySelector("#max_streak").textContent = stats.maxStreak;
@@ -309,6 +340,8 @@ function handleGameEnd(won) {
   const stats = updateStats(won);
   showStats(stats);
 }
+
+expireStreak();
 
 if (initial_state.finished) {
     input.remove();
