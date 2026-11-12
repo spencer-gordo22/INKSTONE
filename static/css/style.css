@@ -100,7 +100,7 @@ header {
     align-items: center;
     justify-content: center;
     text-align: center;
-    font-size: clamp(8px, 2.5vw, 10px);
+    font-size: clamp(12px, 2.5vw, 14px);
     color: #8e8e93;
 }
 
