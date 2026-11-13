@@ -8,9 +8,13 @@ from game import compare, load_characters, todays_answer, get_tone, stroke_displ
 from datetime import date, datetime
 from zoneinfo import ZoneInfo
 
-# AI help: Claude made the DB path absolute (based on this file's folder) so the app runs from any working directory (2026-11-09)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "zimo.db")
+
+env = os.environ.get("DATABASE_PATH")
+if env: 
+    DB_PATH = env 
+else: 
+    DB_PATH = os.path.join(BASE_DIR, "zimo.db")
 
 
 def initialize_database(database_path=DB_PATH):
