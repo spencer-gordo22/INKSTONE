@@ -1,20 +1,16 @@
 # AI help: Claude created this skeleton file (imports only, no logic) (2026-11-01)
 import os
 import sqlite3
-from flask import Flask, jsonify, redirect, render_template, request, send_from_directory, session
-from werkzeug.security import check_password_hash, generate_password_hash
+from flask import Flask, jsonify, render_template, request, session
 from cs50 import SQL
 from game import compare, load_characters, todays_answer, get_tone, stroke_display
-from datetime import date, datetime
+from datetime import datetime
 from zoneinfo import ZoneInfo
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-env = os.environ.get("DATABASE_PATH")
-if env: 
-    DB_PATH = env 
-else: 
-    DB_PATH = os.path.join(BASE_DIR, "zimo.db")
+# Use DATABASE_PATH in production (e.g. a persistent volume); default to a local file.
+DB_PATH = os.environ.get("DATABASE_PATH") or os.path.join(BASE_DIR, "zimo.db")
 
 
 def initialize_database(database_path=DB_PATH):
@@ -143,7 +139,3 @@ def reviews():
     return jsonify ({
         "ok": True
     })
-
-
-
-        

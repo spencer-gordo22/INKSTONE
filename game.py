@@ -9,7 +9,7 @@ from zoneinfo import ZoneInfo
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # AI help: Claude wrote the TONE_MARKS table (2026-11-07)
-TONE_MARKS = { 
+TONE_MARKS = {
     "ā": 1, "ē": 1, "ī": 1, "ō": 1, "ū": 1, "ǖ": 1,
     "á": 2, "é": 2, "í": 2, "ó": 2, "ú": 2, "ǘ": 2,
     "ǎ": 3, "ě": 3, "ǐ": 3, "ǒ": 3, "ǔ": 3, "ǚ": 3,
@@ -36,9 +36,9 @@ def positional_helper(char_info):
         return (char_info["radical_1"], "inner"), (char_info["radical_2"], "outer")
     else:
         return (char_info["radical_1"], "?"), (char_info["radical_2"], "?")
-    
+
 def compare(guess, answer):
-    guess_pairs = positional_helper(guess) 
+    guess_pairs = positional_helper(guess)
     answer_pairs = positional_helper(answer)
     color_list = []
     answer_radicals = []
@@ -54,7 +54,7 @@ def compare(guess, answer):
     structure_check = (guess["structure"] == answer["structure"])
     stroke_count = int(answer["strokes"]) - int(guess["strokes"])
     return color_list, structure_check, stroke_count
-            
+
 def get_tone(pinyin):
     for char in pinyin:
         if char in TONE_MARKS:
@@ -67,7 +67,7 @@ def todays_answer():
     now = datetime.now(ZoneInfo("America/New_York"))
     today = now.date()
     days = (today - date(2026, 11, 8)).days
-    index = days % len(char_list) 
+    index = days % len(char_list)
     todays_word = char_list[index]
     return todays_word
 
@@ -106,52 +106,6 @@ if __name__ == "__main__":
     colors, same_structure, stroke_diff = compare(chars["对"], chars["时"])
     assert colors == ["grey", "green"], "对 vs 时 colors"
     assert same_structure == True, "时 vs 对 structure"
-    assert stroke_diff == 2, "对 vs 时 strokes" 
-    
+    assert stroke_diff == 2, "对 vs 时 strokes"
+
     print("All tests passed")
-    
-
-
-           
-           
-           
-           
-       
-       
-
-    
-        
-            
-        
-               
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-        
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
